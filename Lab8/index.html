@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Dealership</title>
+    <!-- Подключаем Bootstrap (если вы его используете) -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Car Dealership</h1>
+    <button id="addRecordBtn">Добавить запись</button>
+    <table id="carTable">
+        <thead>
+            <tr>
+                <th>Manufacturer</th>
+                <th>Model</th>
+                <th>Engine Capacity</th>
+                <th>Owner Name</th>
+                <th>Year</th>
+                <th>Color</th>
+                <th>Check In</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Сюда будут добавляться записи -->
+        </tbody>
+    </table>
+    <button id="saveBtn">Сохранить</button>
+
+    <script>
+        document.getElementById('addRecordBtn').addEventListener('click', function() {
+            const tableBody = document.querySelector('#carTable tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td>
+                    <button class="deleteBtn">Удалить</button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+            newRow.querySelector('.deleteBtn').addEventListener('click', function() {
+                tableBody.removeChild(newRow);
+            });
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const tableRows = document.querySelectorAll('#carTable tbody tr');
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const data = {
+                    manufacturer: cells[0].innerText,
+                    model_name: cells[1].innerText,
+                    engine_capacity: cells[2].innerText,
+                    owner_name: cells[3].innerText,
+                    year: cells[4].innerText,
+                    color: cells[5].innerText,
+                    check_in: cells[6].innerText
+                };
+                // Отправить данные на сервер
+                fetch('http://127.0.0.1:5000/post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
